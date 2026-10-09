@@ -5,8 +5,8 @@
     "process_proxy": {
       "class_name": "enterprise_gateway.services.processproxies.k8s.KubernetesProcessProxy",
       "config": {
-        "image_name": "ghcr.io/ifca-datalab/kernel-pyspark-delta:spark3.5.9-delta3.3.2",
-        "executor_image_name": "ghcr.io/ifca-datalab/kernel-pyspark-delta:spark3.5.9-delta3.3.2"
+        "image_name": "ghcr.io/ifca-datalab/kernel-pyspark-delta:spark4.2.0-delta4.4.1-base2026-10-05",
+        "executor_image_name": "ghcr.io/ifca-datalab/kernel-pyspark-delta:spark4.2.0-delta4.4.1-base2026-10-05"
       }
     },
     "debugger": true

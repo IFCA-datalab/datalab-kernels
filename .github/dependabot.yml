@@ -1,0 +1,11 @@
+# PRs for new base images (FROM / ARG BASE_IMAGE) and GitHub Actions versions.
+version: 2
+updates:
+  - package-ecosystem: docker
+    directories: ["/docker-images/*"]
+    schedule:
+      interval: weekly
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

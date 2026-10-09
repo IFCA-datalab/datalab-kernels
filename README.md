@@ -7,7 +7,7 @@ Kernelspecs served by Jupyter Enterprise Gateway 3.3.0 (namespace
 |---|---|---|
 | `python_kubernetes`, `python_tf_kubernetes`, `r_kubernetes`, … | `elyra/kernel-*:3.3.0` | Enterprise Gateway 3.3.0 stock kernels |
 | `python_climate` | `ghcr.io/ifca-datalab/kernel-py-climate:eg3.3.0-base2026-10-05` | `quay.io/jupyter/scipy-notebook:2026-10-05` (Python 3.13) + xarray, cartopy, netCDF4, iris, zarr, cdo/nco, TensorFlow… |
-| `pyspark_delta_kubernetes` | `ghcr.io/ifca-datalab/kernel-pyspark-delta:spark3.5.9-delta3.3.2` | `spark:3.5.9-scala2.12-java17-python3-ubuntu` (Docker Official Image) + Delta 3.3.2, Ceph RGW jars |
+| `pyspark_delta_kubernetes` | `ghcr.io/ifca-datalab/kernel-pyspark-delta:spark4.2.0-delta4.4.1-base2026-10-05` | `quay.io/jupyter/pyspark-notebook:2026-10-05` (Ubuntu 26.04, Java 21, Spark 4.2.0) + Delta 4.4.1, Ceph RGW jars |
 
 The volumes and namespace of each environment are not in the kernelspecs: the
 hub sends `KERNEL_NAMESPACE`, `KERNEL_SERVICE_ACCOUNT_NAME`, `KERNEL_VOLUMES`
@@ -22,15 +22,21 @@ from the EG GitHub release), so ours start from bases that are maintained:
 
 - `quay.io/jupyter/*-notebook`: Jupyter docker-stacks, a new dated tag every
   week. Pin the date tag (`python-3.x` tags freeze once the series moves on).
-- `spark:<version>-…-python3-ubuntu`: Docker Official Image, rebuilt with
-  security updates for each Spark release line.
 
 Dependabot (`.github/dependabot.yml`) opens a PR when a new base tag appears.
+
+## Gateway image
+
+`docker-images/enterprise-gateway` rebuilds the upstream gateway image on the
+same base: `elyra/enterprise-gateway:3.3.0` has Java 8 and Spark 3.2.1 (its
+`spark-submit` creates the driver pods of the Spark kernels) on Ubuntu 22.04.
+EG 3.3.0 declares Python 3.10–3.11 and the base has 3.13: try the image next to
+the current gateway before switching the Helm release (`image:` value) to it.
 
 ## Layout
 
 - `<kernel>/`: one kernelspec per folder (EG 3.3.0 format).
-- `_images/<image>/Dockerfile`: kernel images, built by
+- `docker-images/<image>/Dockerfile`: kernel images, built by
   `.github/workflows/kernel-images.yml` and pushed to `ghcr.io/ifca-datalab/`.
 - `_deploy/sync-to-jeg.sh`: copies the kernelspecs to the gateway's
   `kernelspecs` volume. It refuses to run while an image is missing.
@@ -44,6 +50,6 @@ Dependabot (`.github/dependabot.yml`) opens a PR when a new base tag appears.
 4. Allow new kernelspecs in the gateway (`kernel.allowedKernels` of the
    enterprise-gateway Helm release).
 
-Spark kernels: the gateway's `spark-submit` is Spark 3.2.1 (Java 8), so kernel
-images stay on Spark 3.x. The Delta and Ceph jars are inside the image; there is
+Spark kernels: the gateway's `spark-submit` (3.2.1) only builds the driver pod;
+the driver runs the image's own Spark, so kernel images can use Spark 4. The Delta and Ceph jars are inside the image; there is
 no `spark.jars.packages` download at start-up.

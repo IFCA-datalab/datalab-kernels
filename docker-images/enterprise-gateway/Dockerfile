@@ -17,11 +17,16 @@ RUN ln -s "${SPARK_HOME}" /opt/spark
 ENV SPARK_HOME=/opt/spark
 
 USER ${NB_UID}
+# EG 3.3.0 pins an old Jupyter stack (pyzmq<25, jupyter-client<7,
+# jupyter-server<2) and supports Python 3.10-3.11 only: pyzmq 24 has no wheels
+# for the base's Python 3.13. Give the gateway its own Python 3.11 env, first
+# on PATH, and leave the base environment untouched.
 # ipykernel 7 has an asyncio rewrite that keeps kernels from becoming idle (upstream note).
-RUN mamba install --yes cffi send2trash requests future pycryptodomex \
+RUN mamba create --yes -n eg python=3.11 cffi send2trash requests future pycryptodomex \
  && mamba clean --all -f -y \
- && pip install --no-cache-dir "ipykernel<7" "jupyter-enterprise-gateway==${EG_VERSION}" \
+ && "${CONDA_DIR}/envs/eg/bin/pip" install --no-cache-dir "ipykernel<7" "jupyter-enterprise-gateway==${EG_VERSION}" \
  && fix-permissions "${CONDA_DIR}"
+ENV PATH=${CONDA_DIR}/envs/eg/bin:${PATH}
 
 USER root
 ADD ${EG_RELEASE}/jupyter_enterprise_gateway_kernelspecs-${EG_VERSION}.tar.gz /tmp/kernelspecs.tar.gz

@@ -5,7 +5,7 @@
 # kernelspecs run that spark-submit to create the driver pods. Same recipe
 # (upstream etc/docker/enterprise-gateway/Dockerfile) on docker-stacks
 # pyspark-notebook: Ubuntu 26.04, Java 21, Spark 4.2.0.
-FROM quay.io/jupyter/pyspark-notebook:2026-10-05
+FROM quay.io/jupyter/pyspark-notebook:2026-10-12
 
 ARG EG_VERSION=3.3.0
 ARG EG_RELEASE=https://github.com/jupyter-server/enterprise_gateway/releases/download/v${EG_VERSION}

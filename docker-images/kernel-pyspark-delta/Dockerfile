@@ -5,7 +5,7 @@
 # Base: Jupyter docker-stacks pyspark-notebook (Ubuntu 26.04, Java 21, Spark
 # 4.2.0, conda Python), rebuilt every week; pinned by date. It is the same
 # family as the other kernel images and the gateway image of this repo.
-FROM quay.io/jupyter/pyspark-notebook:2026-10-05
+FROM quay.io/jupyter/pyspark-notebook:2026-10-28
 
 ARG EG_VERSION=3.3.0
 ARG SPARK_VERSION=4.2.0

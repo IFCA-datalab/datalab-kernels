@@ -5,7 +5,7 @@
 # Enterprise Gateway kernel launchers, but it is only rebuilt with each EG
 # release. docker-stacks publishes a new, dated image every week: use one of
 # those (pinned by date) and add the launchers of the EG release ourselves.
-FROM quay.io/jupyter/scipy-notebook:2026-10-05
+FROM quay.io/jupyter/scipy-notebook:2026-10-28
 
 ARG EG_VERSION=3.3.0
 
